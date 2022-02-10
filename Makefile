@@ -1,4 +1,4 @@
-obj-m := cogito.o
+obj-m := muadDib.o
 CC = gcc -Wall 
 KDIR := /lib/modules/$(shell uname -r)/build
 PWD := $(shell pwd)
