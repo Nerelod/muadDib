@@ -1,7 +1,6 @@
 //https://xcellerator.github.io/posts/linux_rootkits_11/
 //https://github.com/m0nad/Diamorphine
 //https://github.com/h3xduck/Umbra
-#include "revshell.c"
 #include "ftrace_hook.h"
 #include "mkdir_hook.c"
 #include "kill_hook.c"

