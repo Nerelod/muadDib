@@ -16,6 +16,8 @@
 #include <linux/version.h>
 #include <linux/kprobes.h>
 
+#define DEBUGMSG 1
+
 MODULE_DESCRIPTION("Example module hooking clone() and execve() via ftrace");
 MODULE_AUTHOR("ilammy <a.lozovsky@gmail.com>");
 MODULE_LICENSE("GPL");

