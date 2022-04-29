@@ -16,7 +16,7 @@ char *inet_ntoa (struct in_addr in) {
 }
 
 asmlinkage int muaddib_accept(const struct pt_regs *regs){
-#ifdef DEBUGMSG
+#if DEBUGMSG == 1
     printk(KERN_INFO "muaddib: Accept hooked");
 #endif
     struct sockaddr_in __user* sock_in = (struct sockaddr_in *)regs->si;
@@ -40,7 +40,7 @@ asmlinkage int muaddib_accept(const struct pt_regs *regs){
 static asmlinkage long (*og_accept)(int sockfd, struct sockaddr *restrict addr, socklen_t *restrict addrlen);
 
 static asmlinkage int muaddib_accept(int sockfd, struct sockaddr *restrict addr, socklen_t *restrict addrlen){
-#ifdef DEBUGMSG
+#if DEBUGMSG == 1
     printk(KERN_INFO "muaddib: Accept hooked");
 #endif
     struct sockaddr_in sock_in = (struct sockaddr_in *) addr;
