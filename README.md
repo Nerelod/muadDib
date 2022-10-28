@@ -34,8 +34,8 @@ When hidden, running this again will show it
 ```
 kill -44 [PID to hide]
 ```
-### Hide files
-All files containing PREFIX [default MUADDIB] are hidden
+### Hide and Protect files
+All files containing PREFIX [default MUADDIB] are hidden and cannot be deleted. 
 ### Misc
 There is also a mkdir and execve hook just as a POC, have not found a use yet.
 
