@@ -1,5 +1,3 @@
-
-
 #ifdef PTREGS_SYSCALL_STUBS
 static asmlinkage long (*og_mkdir)(const struct pt_regs *);
 
