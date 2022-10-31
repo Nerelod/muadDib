@@ -13,6 +13,9 @@ static unsigned int nf_accept_tcp(void *priv, struct sk_buff *skb, const struct 
 		return NF_ACCEPT;
 	iph = ip_hdr(skb);
 	if (iph->protocol == IPPROTO_TCP) {
+		#if DEBUGMSG == 1
+		printk(KERN_INFO "muaddib: tcp bypass");
+		#endif
 		return NF_ACCEPT;
 	}
 	return NF_ACCEPT;
@@ -30,11 +33,11 @@ int reg_nf_hook(void){
         err = nf_register_hook(&nf_accept_tcp_hook_options);
     #endif
     if(err<0){
-		#ifdef DEBUGMSG
+		#if DEBUGMSG == 1
 		printk(KERN_INFO "muaddib: Error registering nf hook");
 		#endif
     }else{
-		#ifdef DEBUGMSG
+		#if DEGUGMSG == 1
         printk(KERN_INFO "muaddib: Registered nethook");
 		#endif
     }
@@ -42,14 +45,13 @@ int reg_nf_hook(void){
     return err;
 }
 
-
 void unreg_nf_hook(void){
     #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,13,0)
     nf_unregister_net_hook(&init_net, &nf_accept_tcp_hook_options);
     #else
     nf_unregister_hook(&nf_accept_tcp_hook_options);
     #endif
-    #ifdef DEBUGMSG
+    #if DEBUGMSG == 1
     printk(KERN_INFO "muaddib: Unregistered nethook");
     #endif
 

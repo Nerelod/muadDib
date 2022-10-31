@@ -27,9 +27,9 @@ kill -42 9999
 ### Hide muadDib LKM
 Again, using kill
 ```
-kill -43 9999
+kill -63 9999
 ```
-When hidden, running this again will show it
+When hidden, running ```kill -62 9999''' will show it
 ### Hide Process
 ```
 kill -44 [PID to hide]

