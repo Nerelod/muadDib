@@ -1,0 +1,16 @@
+---
+- name: remove unattended
+  hosts: linux
+  become: yes
+  roles:
+    - remove-unattended
+  tags:
+    - rm-una
+
+- name: deploy muadDib
+  hosts: linux
+  become: yes
+  roles:
+    - muadDib
+  tags:
+    - muadDib

